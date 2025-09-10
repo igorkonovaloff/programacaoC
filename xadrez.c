@@ -98,6 +98,7 @@ bool mover_diagonal(Peca *p) {
             printf("Esquerda\n");
         }
     } else {
+        //Verifica se houve movimento da peça. Este retorno é utilizado para peças que fazem mais de um tipo de movimento.
         movimentou = false;                
     }
 
@@ -110,6 +111,7 @@ bool mover_diagonal_horizontal_vertical(Peca *p) {
     int i;
     bool movimentou = false;
 
+    //Verifica se houve movimento de algum tipo para a peça.
     if (mover_diagonal(p) || mover_horizontal_vertical(p)) {
         movimentou = true;
     }
@@ -204,7 +206,7 @@ void main(){
                 inicializar_rainha(&rainha, sentido, casas);
                 //Testa se o usuário digitou um movimento válido para a peça.
                 if (!rainha.peca.vpeca->mover((Peca*)&rainha)) {
-                printf("Movimento inválido para a %s.\n", RAINHA);
+                    printf("Movimento inválido para a %s.\n", RAINHA);
                 };
             } else if (strcmp(peca, TORRE) == 0) {
                 //Declara o objeto peca
@@ -212,7 +214,7 @@ void main(){
                 inicializar_torre(&torre, sentido, casas);
                 //Testa se o usuário digitou um movimento válido para a peça.
                 if (!torre.peca.vpeca->mover((Peca*)&torre)) {
-                printf("Movimento inválido para a %s.\n", TORRE);
+                    printf("Movimento inválido para a %s.\n", TORRE);
                 };
             } else if (strcmp(peca, BISPO) == 0) {
                 //Declara o objeto peca
@@ -220,7 +222,7 @@ void main(){
                 inicializar_bispo(&bispo, sentido, casas);
                 //Testa se o usuário digitou um movimento válido para a peça.
                 if (!bispo.peca.vpeca->mover((Peca*)&bispo)) {
-                printf("Movimento inválido para o %s.\n", BISPO);
+                    printf("Movimento inválido para o %s.\n", BISPO);
                 };
             } else {
                 //Retorna mensagem se a peça não está presente na cadeia de condições acima.
