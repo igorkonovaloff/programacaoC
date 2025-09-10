@@ -231,8 +231,8 @@ void main(){
         }
 
 
-    printf("Deseja sair ? (S/N) \n");
-    scanf(" %s",sair);
+        printf("Deseja sair ? (S/N) \n");
+        scanf(" %s",sair);
 
     } while (strcmp(sair, "S") != 0);
 }
