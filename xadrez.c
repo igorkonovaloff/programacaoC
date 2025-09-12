@@ -7,6 +7,8 @@
 const char RAINHA[7] = "RAINHA", TORRE[6]  = "TORRE", BISPO[6]  = "BISPO", CAVALO[7] = "CAVALO";
 const char DIREITA[8] = "DIREITA", ESQUERDA[9] = "ESQUERDA", CIMA[5] = "CIMA", BAIXO[6] = "BAIXO"; 
 const char CIMA_DIREITA[13] = "CIMA_DIREITA", BAIXO_DIREITA[14] = "BAIXO_DIREITA" , CIMA_ESQUERDA[14] = "CIMA_ESQUERDA", BAIXO_ESQUERDA[15]="BAIXO_ESQUERDA";
+const char CAVALO_DIREITA_BAIXO[27] = "CAVALO_DIREITA_BAIXO", CAVALO_ESQUERDA_BAIXO[27] = "CAVALO_ESQUERDA_BAIXO" , 
+CAVALO_ESQUERDA_CIMA[28] = "CAVALO_ESQUERDA_CIMA", CAVALO_DIREITA_CIMA[28]="CAVALO_DIREITA_CIMA";
 
 // Declaração antecipada para que a struct Peca seja reconhecida
 typedef struct Peca Peca;
@@ -40,6 +42,11 @@ typedef struct {
 typedef struct {
     Peca peca;
 } Rainha;
+
+// Classe concreta Derivada: Rainha
+typedef struct {
+    Peca peca;
+} Cavalo;
 
 
 //Implementação dos tipos de movimentos que podem ser executados pelas peças.
@@ -105,6 +112,58 @@ bool mover_diagonal(Peca *p) {
     return movimentou;
 }
 
+//Movimento cavalo
+bool mover_cavalo(Peca *p) {
+    int i;
+    bool movimentou = true;
+
+    if (strcmp(p->sentido, CIMA_DIREITA) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Cima\n");
+        }
+        printf("Direita\nS");
+    } else if (strcmp(p->sentido, CIMA_ESQUERDA) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Cima\n");
+        }
+        printf("Esquerda\n");
+    } else if (strcmp(p->sentido, BAIXO_DIREITA) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Baixo\n");
+        }
+        printf("Direita\n");
+    } else if (strcmp(p->sentido, BAIXO_ESQUERDA) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Baixo\n");
+        }
+        printf("Esquerda\n");
+    } else if (strcmp(p->sentido, CAVALO_DIREITA_BAIXO) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Direita\n");
+        }
+        printf("Baixo\n");        
+    } else if (strcmp(p->sentido, CAVALO_DIREITA_CIMA) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Direita\n");
+        }
+        printf("Cima\n");        
+    } else if (strcmp(p->sentido, CAVALO_ESQUERDA_BAIXO) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Esquerda\n");
+        }
+        printf("Baixo\n");        
+    } else if (strcmp(p->sentido, CAVALO_ESQUERDA_CIMA) == 0) {
+        for (i=1; i <= p->casas; ++i) {
+            printf("Esquerda\n");
+        }
+        printf("Cima\n");        
+    } else {
+        //Verifica se houve movimento da peça. Este retorno é utilizado para peças que fazem mais de um tipo de movimento.
+        movimentou = false;                
+    }
+    return movimentou;
+}
+
 
 //Movimento horizontal e vertical e diagonal
 bool mover_diagonal_horizontal_vertical(Peca *p) {
@@ -133,6 +192,11 @@ static Peca_VTable vtable_bispo = {
 // Aloca a VTable para o Bispo 
 static Peca_VTable vtable_rainha = {
     .mover = mover_diagonal_horizontal_vertical
+};
+
+// Aloca a VTable para o Cavalo 
+static Peca_VTable vtable_cavalo = {
+    .mover = mover_cavalo
 };
 
 //Configura o estado interno do objeto.
@@ -168,6 +232,15 @@ void inicializar_rainha(Rainha *rainha, char * sentido, int casas) {
     rainha->peca.vpeca = &vtable_rainha;
 }
 
+// Construtor do cavalo
+void inicializar_cavalo(Cavalo *cavalo, char * sentido, int casas) {
+
+    inicializar_peca((Peca*)cavalo, sentido, casas);
+
+    cavalo->peca.vpeca = &vtable_cavalo;
+}
+
+
 //Método principal executável
 void main(){
 
@@ -190,10 +263,15 @@ void main(){
         //Prompt de entrada para o usuário
         printf("Digite a peça que deseja mover (%s, %s, %s, %s para sair do programa.): \n", RAINHA, TORRE, BISPO, CAVALO);
         scanf(" %s", peca);
-        printf("Digite o sentido da peça (%s, %s, %s, %s, %s, %s, %s, %s): \n", DIREITA, ESQUERDA, CIMA, BAIXO, CIMA_DIREITA, BAIXO_DIREITA , CIMA_ESQUERDA, BAIXO_ESQUERDA);
+        printf("Digite o sentido da peça (%s, %s, %s, %s, %s, %s, %s, %s): \n", DIREITA, ESQUERDA, CIMA, BAIXO, CIMA_DIREITA, BAIXO_DIREITA , CIMA_ESQUERDA, BAIXO_ESQUERDA, 
+            CAVALO_DIREITA_BAIXO, CAVALO_DIREITA_CIMA, CAVALO_ESQUERDA_CIMA, CAVALO_ESQUERDA_BAIXO);
         scanf(" %s", sentido);
-        printf("Digite a quantidade de casas (1-8): \n");
-        scanf(" %i",&casas);
+        if (strcmp(peca, CAVALO) != 0){
+            printf("Digite a quantidade de casas (1-8): \n");
+            scanf(" %i",&casas);
+        } else {
+            casas = 2;
+        }
 
         //Testa número de casas. Só permite de 1 a 8, por causa do tamanho do tabuleiro de xadrez; 8x8
         if (casas < 1 || casas >8) {
@@ -223,6 +301,14 @@ void main(){
                 //Testa se o usuário digitou um movimento válido para a peça.
                 if (!bispo.peca.vpeca->mover((Peca*)&bispo)) {
                     printf("Movimento inválido para o %s.\n", BISPO);
+                };
+            } else if (strcmp(peca, CAVALO) == 0) {
+                //Declara o objeto peca
+                Cavalo cavalo;
+                inicializar_cavalo(&cavalo, sentido, casas);
+                //Testa se o usuário digitou um movimento válido para a peça.
+                if (!cavalo.peca.vpeca->mover((Peca*)&cavalo)) {
+                    printf("Movimento inválido para o %s.\n", CAVALO);
                 };
             } else {
                 //Retorna mensagem se a peça não está presente na cadeia de condições acima.
